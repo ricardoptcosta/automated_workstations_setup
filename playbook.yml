@@ -1,0 +1,91 @@
+---
+
+- hosts: all
+  become: true
+  tasks: 
+
+  - name: add ssh key for appcot
+    tags: always
+    authorized_key:
+        user: appcot
+        key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJCdlxtubwhUzFMHd/1TRVLhbpKhy8jJ7IUNRm+FU36t ansible" 
+
+  - name: update repo cache and upgrade distribution
+    tags: always
+    apt:
+        upgrade: dist
+        update_cache: yes
+    changed_when: false    
+    when: ansible_distribution in ["Kali GNU/Linux"]
+
+  - name: copy copyQ configuration
+    copy:
+        src: /home/ric/.config/copyq
+        dest: /home/ric/.config/
+        owner: ric
+        group: ric
+        mode: 0664
+
+  - name: create autostart folder
+    file:
+      path: /home/ric/.config/autostart
+      state: directory
+
+  - name: add copyQ to autostart
+    copy:
+        src: /home/ric/.config/autostart/copyq.desktop 
+        dest: /home/ric/.config/autostart/copyq.desktop 
+        owner: ric
+        group: ric
+        mode: 0664
+
+  - name: install copyQ
+    apt:
+        deb: https://github.com/hluk/CopyQ/releases/download/v3.2.0/copyq_3.2.0_Debian_8.0-1_amd64.deb
+    ignore_errors: yes
+
+  - name: install apache2 package and php support
+    tags: apache,apache2,kali
+    apt:
+        name: 
+          - apache2
+          - libapache2-mod-php
+        state: latest
+    when: ansible_distribution in ["Kali GNU/Linux"]
+
+  - name: copy bash_aliases
+    copy:
+        src: /home/ric/.bash_aliases
+        dest: /home/ric/.bash_aliases
+        owner: root
+        group: root
+        mode: 0644
+    register: bash_aliases
+
+  - name: source .bashrc
+    shell: source .bashrc
+    args:
+        chdir: /home/ric
+        executable: /bin/bash
+    when: bash_aliases.changed
+
+  - name: install unzip
+    package:
+        name: unzip
+
+  - name: install terraform
+    unarchive:
+       src: https://releases.hashicorp.com/terraform/0.13.5/terraform_0.13.5_linux_amd64.zip
+       dest: /usr/local/bin
+       remote_src: yes
+       mode: 0755
+       owner: root
+       group: root
+
+  - name: install vscode
+    apt:
+       deb: https://packages.microsoft.com/repos/vscode/pool/main/c/code/code_1.51.1-1605051630_amd64.deb
+
+  - name: Remove dependencies that are no longer required
+    apt:
+       autoremove: yes

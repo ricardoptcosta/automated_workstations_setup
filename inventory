@@ -1,9 +1,9 @@
-[hosts]
+[workstations]
 192.168.1.45
 192.168.1.67
 192.168.1.69
 192.168.1.98
 
-[hosts:vars]
+[workstations:vars]
 ansible_python_interpreter=/usr/bin/python3
 
