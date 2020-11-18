@@ -1,6 +1,0 @@
-   - name: add ssh key for appcot
-     tags: always
-     authorized_key:
-         user: appcot
-         key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJCdlxtubwhUzFMHd/1TRVLhbpKhy8jJ7IUNRm+FU36t ansible"
-

@@ -1,0 +1,4 @@
+copyQ_install_url: https://github.com/hluk/CopyQ/releases/download/v3.2.0/copyq_3.2.0_Debian_8.0-1_amd64.deb
+ssh_users: "ric ansible"
+ssh_template_file: sshd_config_kali.j2
+

@@ -5,6 +5,7 @@
         owner: ric
         group: ric
         mode: 0664
+    ignore_errors: yes
 
   - name: create autostart folder
     file:
@@ -21,7 +22,7 @@
 
   - name: install copyQ
     apt:
-        deb: https://github.com/hluk/CopyQ/releases/download/v3.2.0/copyq_3.2.0_Debian_8.0-1_amd64.deb
+        deb: "{{copyQ_install_url}}"
     ignore_errors: yes
 
   - name: install apache2 package and php support
